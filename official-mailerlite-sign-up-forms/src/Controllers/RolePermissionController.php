@@ -32,7 +32,9 @@ class RolePermissionController
         'please_wait' => 'Please Wait Text',
         'language' => 'Language',
         'form_fields' => 'Form Fields',
-        'groups' => 'Groups'
+        'groups' => 'Groups',
+        'email_label' => 'Email Field Label',
+        'email_placeholder' => 'Email Field Placeholder',
     ];
 
     private $loggedInUser;

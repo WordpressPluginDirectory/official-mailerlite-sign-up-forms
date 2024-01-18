@@ -68,11 +68,11 @@ class CustomForm
                                 }
                                 ?>
                                 <div class="mailerlite-form-field">
-                                    <label for="mailerlite-<?php echo $form_id; ?>-field-<?php echo $key; ?>"><?php echo $title; ?></label>
+                                    <label for="mailerlite-<?php echo $form_id; ?>-field-<?php echo $key; ?>"><?php echo ($key == 'email') ? ($form_data['email_label'] ?? $title) : $title; ?></label>
                                     <input id="mailerlite-<?php echo $form_id; ?>-field-<?php echo $key; ?>"
                                            type="<?php echo $input_type; ?>" <?php if ($input_type === 'email') { ?>required="required" <?php } ?>
                                            name="form_fields[<?php echo $key; ?>]"
-                                           placeholder="<?php echo $title; ?>"/>
+                                           placeholder="<?php echo ($key == 'email') ? ($form_data['email_placeholder'] ?? $title) : $title; ?>"/>
                                 </div>
                             <?php endforeach; ?>
                             <div class="mailerlite-form-loader"><?php if ( ! empty( $form_data['please_wait'] ) ) {
@@ -81,8 +81,9 @@ class CustomForm
                                     _e( 'Please wait...', 'mailerlite' );
                                 } ?></div>
                             <div class="mailerlite-subscribe-button-container">
-                                <input class="mailerlite-subscribe-submit" type="submit"
-                                       value="<?php echo $form_data['button']; ?>"/>
+                                <button class="mailerlite-subscribe-submit" type="submit">
+                                    <?php echo $form_data['button']; ?>
+                                </button>
                             </div>
                             <input type="hidden" name="form_id" value="<?php echo $form_id; ?>"/>
                             <input type="hidden" name="action" value="mailerlite_subscribe_form"/>

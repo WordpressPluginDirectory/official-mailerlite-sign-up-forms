@@ -155,7 +155,10 @@ class AdminController
                             $groups_selected = $form_selected_groups;
                         }
                     }
-
+                    if (!isset($form->data['email_label'])) {
+                        $form->data['email_label'] = 'Email';
+                        $form->data['email_placeholder'] = 'Email';
+                    }
                     $groups_not_selected = array_filter($groups_from_ml, function($group) use ($form_lists) {
                         return ! in_array($group->id, $form_lists);
                     });
@@ -191,19 +194,13 @@ class AdminController
                                                $_POST['form_field']
                                            ) ? $_POST['form_field'] : [];
 
-                        if ( ! isset( $field_titles['email'] ) || $field_titles['email'] == '' ) {
-                            $field_titles['email'] = __( 'Email', 'mailerlite' );
-                        }
+                        $email_label =  Helper::issetWithDefault( 'email_label',
+                            __( 'Email', 'mailerlite' ) );
 
-
-
+                        $email_placeholder =  Helper::issetWithDefault( 'email_placeholder',
+                            __( 'Email', 'mailerlite' ) );
 
                         $prepared_fields = [];
-
-                        // Force to use email
-                        $prepared_fields['email'] = [];
-                        $prepared_fields['email']['title'] = $field_titles['email'];
-                        $prepared_fields['email']['type']  = 'email';
 
                         foreach ( $selected_fields as $field ) {
                             if ( isset( $field_titles[ $field ] ) ) {
@@ -211,6 +208,15 @@ class AdminController
                                 $prepared_fields[ $field ]['title'] = $field_titles[ $field ];
                                 $prepared_fields[ $field ]['type']  = isset($_POST['field_type_' . $field]) ? $_POST['field_type_' . $field] : 'text';
                             }
+                        }
+
+                        if ( ! isset( $field_titles['email'] ) || $field_titles['email'] == '' ) {
+                            $field_titles['email'] = __( 'Email', 'mailerlite' );
+
+                            // Force to use email
+                            $prepared_fields['email'] = [];
+                            $prepared_fields['email']['title'] = $field_titles['email'];
+                            $prepared_fields['email']['type']  = 'email';
                         }
 
                         $form_data = [
@@ -223,6 +229,8 @@ class AdminController
                             'lists'           => $rolePermission->canEdit('groups') ? $form_lists : $form->data['lists'],
                             'fields'          => $rolePermission->canEdit('form_fields') ? $prepared_fields : $form->data['fields'],
                             'selected_groups' => $rolePermission->canEdit('groups') && isset($form_selected_groups) ? $form_selected_groups : $form->data['selected_groups'],
+                            'email_label' => $email_label,
+                            'email_placeholder' => $email_placeholder,
                         ];
 
                         $form_name = $rolePermission->canEdit('form_name') ? $form_name : $form->name;

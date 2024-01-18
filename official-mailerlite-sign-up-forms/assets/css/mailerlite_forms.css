@@ -47,3 +47,7 @@
     display: block;
     color: #ff0000;
 }
+
+.mailerlite-subscribe-submit{
+    max-width: 100%;
+}

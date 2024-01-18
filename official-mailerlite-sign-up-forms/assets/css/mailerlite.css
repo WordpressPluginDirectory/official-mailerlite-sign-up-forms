@@ -126,3 +126,37 @@ p.success {
 .ml_unavailable img {
     opacity: 0.5;
 }
+
+#ml-fields-table td, #ml-fields-table tr, #ml-fields-table th{
+    border-collapse: collapse;
+    cursor:all-scroll;
+}
+
+#ml-fields-table .input_control {
+    margin-top: 0;
+}
+
+.ml-read-only {
+    background: #EFEFEF;
+    pointer-events: none;
+}
+
+.ml-grip {
+    position: absolute;
+    content: '....';
+    width: 10px;
+    height: 20px;
+    display: inline-block;
+    overflow: hidden;
+    line-height: 5px;
+    padding: 3px;
+    cursor: move;
+    vertical-align: middle;
+    margin-top: -.5em;
+    margin-right: .3em;
+    color: #EFEFEF;
+    text-shadow: 1px 0 1px #333333;
+}
+.ml-grip::after {
+    content: '.. .. .. ..';
+}

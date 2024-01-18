@@ -216,8 +216,8 @@ msgstr "Fields"
 
 # @ mailerlite
 #: include/templates/admin/edit_custom.php:149
-msgid "Select fields which will be displayed in the form."
-msgstr "Select fields that will be displayed in the form."
+msgid "Select the fields that will be displayed in the form and set their order."
+msgstr "Select the fields that will be displayed in the form and set their order."
 
 # @ mailerlite
 #: include/templates/admin/edit_custom.php:182

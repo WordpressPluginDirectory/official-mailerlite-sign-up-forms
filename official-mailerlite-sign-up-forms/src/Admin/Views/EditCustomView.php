@@ -146,6 +146,34 @@ class EditCustomView
                                                 </td>
                                             </tr>
                                             <tr>
+                                                <th>
+                                                    <label for="email_label"><?php _e( 'Email field label',
+                                                            'mailerlite' ); ?></label>
+                                                </th>
+                                                <td>
+                                                    <input type="text" class="regular-text" name="email_label" size="30"
+                                                           maxlength="255"
+                                                           value="<?php echo $form->data['email_label']; ?>" id="email_label"
+                                                        <?php echo !$rolePermission->canEdit('email_label') ? 'disabled' : ''; ?>
+                                                    >
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>
+                                                    <label for="email_placeholder"><?php _e( 'Email field placeholder',
+                                                            'mailerlite' ); ?></label>
+                                                </th>
+                                                <td>
+                                                    <input type="text" class="regular-text" name="email_placeholder" size="30"
+                                                           maxlength="255"
+                                                           value="<?php echo $form->data['email_placeholder']; ?>" id="email_placeholder"
+                                                        <?php echo !$rolePermission->canEdit('email_placeholder') ? 'disabled' : ''; ?>
+                                                    >
+                                                </td>
+                                            </tr>
+
+                                            <tr>
                                                 <th><label for="button_name"><?php _e( 'Button title',
                                                             'mailerlite' ); ?></label>
                                                 </th>
@@ -200,43 +228,62 @@ class EditCustomView
                                                 <?php if($rolePermission->canEdit('form_fields')): ?>
                                                 <td style="vertical-align: top;width: 350px;">
                                                     <h2><?php _e( 'Fields', 'mailerlite' ); ?></h2>
-                                                    <p class="description"><?php _e( 'Select fields which will be displayed in the form.',
+                                                    <p class="description"><?php _e( 'Select the fields that will be displayed in the form and set their order.',
                                                             'mailerlite' ); ?></p>
-                                                    <table class="form-table">
+                                                    <table class="form-table" id="ml-fields-table">
                                                         <tbody>
 
                                                         <?php
+                                                        foreach ( $form->data['fields'] as $key => $field ):
+                                                            if (is_array($field)) {
+                                                                $title = $field['title'];
+                                                            } else {
+                                                                $title = $field;
+                                                            }
+                                                        ?>
+                                                            <tr draggable="true">
+                                                                <th style="width:1%;">
+                                                                    <input type="checkbox"
+                                                                         class="input_control <?php
+                                                                         echo $key == 'email' ? 'ml-read-only' : ''; ?>"
+                                                                         name="form_selected_field[]"
+                                                                         value="<?php echo $key; ?>"
+                                                                         checked="checked">
+                                                                    <span class="ml-grip"></span>
+                                                                </th>
+                                                                <td>
+                                                                    <input type="text" id="field_<?php echo $key; ?>"
+                                                                       name="form_field[<?php echo $key; ?>]"
+                                                                       size="30" maxlength="255"
+                                                                       value="<?php echo $title; ?>" class="<?php
+                                                                    echo $key == 'email' ? 'ml-read-only' : ''; ?>">
+                                                                    <input type="hidden" id="field_type_<?php echo $key; ?>"
+                                                                           name="field_type_<?php echo $key; ?>"
+                                                                           value="<?php echo $field['type']; ?>">
+                                                                </td>
+                                                            </tr>
+                                                        <?php
+                                                        endforeach;
+
                                                         /** @var MailerLiteField $field */
                                                         foreach ( $fields as $field ):
 
-                                                            $title = '';
-
-                                                            if (isset($form->data['fields'][ $field->key ])) {
-                                                                if (is_array($form->data['fields'][$field->key])) {
-                                                                    $title = $form->data['fields'][$field->key]['title'];
-                                                                } else {
-                                                                    $title = $form->data['fields'][$field->key];
-                                                                }
-                                                            }
-
+                                                            if (array_key_exists( $field->key,
+                                                                $form->data['fields'] ))
+                                                                continue;
                                                         ?>
-                                                            <tr>
-                                                                <th style="width:1%;"><input type="checkbox"
-                                                                                             class="input_control"
-                                                                                             name="form_selected_field[]"
-                                                                                             value="<?php echo $field->key; ?>"<?php echo $field->
-                                                                    key == 'email' || array_key_exists( $field->key,
-                                                                        $form->data['fields'] ) ?
-                                                                        ' checked="checked"' : '';
-                                                                    echo $field->key == 'email' ? ' disabled="disabled"' : ''; ?>>
+                                                            <tr draggable="true">
+                                                                <th style="width:1%;">
+                                                                    <input type="checkbox"
+                                                                         class="input_control"
+                                                                         name="form_selected_field[]"
+                                                                         value="<?php echo $field->key; ?>">
+                                                                    <span class="ml-grip"></span>
                                                                 </th>
                                                                 <td><input type="text" id="field_<?php echo $field->key; ?>"
                                                                            name="form_field[<?php echo $field->key; ?>]"
                                                                            size="30" maxlength="255"
-                                                                           value="<?php echo array_key_exists( $field->key,
-                                                                               $form->data['fields'] ) ? $title : $field->title; ?>"<?php echo $field->key == 'email' || array_key_exists( $field->key,
-                                                                        $form->data['fields'] ) ?
-                                                                        '' : ' disabled="disabled"'; ?>>
+                                                                           value="<?php echo $field->title; ?>">
                                                                     <input type="hidden" id="field_type_<?php echo $field->key; ?>"
                                                                            name="field_type_<?php echo $field->key; ?>"
                                                                            value="<?php echo $field->type; ?>">
@@ -426,6 +473,34 @@ class EditCustomView
                         });
                 }
             });
+
+            const rows = document.querySelectorAll('#ml-fields-table tr');
+
+            rows.forEach(function(el, index) {
+                el.addEventListener('dragstart', dragField);
+                el.addEventListener('dragover', moveField);
+            });
+
+            let row;
+
+            function dragField(event) {
+                row = event.target;
+            }
+
+            function moveField(event) {
+                event.preventDefault();
+
+                if (event.target.parentNode.tagName !== 'TR')
+                    return;
+
+                let children = Array.from(event.target.parentNode.parentNode.children);
+
+                if(children.indexOf(event.target.parentNode) > children.indexOf(row)) {
+                    event.target.parentNode.after(row);
+                } else {
+                    event.target.parentNode.before(row);
+                }
+            }
         </script>
 
         <?php
