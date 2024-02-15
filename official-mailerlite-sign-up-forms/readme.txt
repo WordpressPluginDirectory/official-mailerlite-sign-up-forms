@@ -3,9 +3,9 @@ Contributors: mailerlite
 Donate link: https://www.mailerlite.com/
 Tags: mailerlite, newsletter, subscribe, form, webform
 Requires at least: 3.0.1
-Tested up to: 6.3.1
+Tested up to: 6.4.3
 Requires PHP: 7.2.5
-Stable tag: 1.7.3
+Stable tag: 1.7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -129,6 +129,9 @@ Add your custom CSS rules to the end of your theme stylesheet, /wp-content/theme
 
 
 == Changelog ==
+
+= 1.7.4 =
+* Wordpress 6.4.3 compatibility
 
 = 1.7.3 =
 * Added the ability to edit email field labels and placeholders
