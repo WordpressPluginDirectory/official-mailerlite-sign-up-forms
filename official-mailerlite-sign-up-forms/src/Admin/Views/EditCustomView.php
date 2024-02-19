@@ -259,7 +259,7 @@ class EditCustomView
                                                                     echo $key == 'email' ? 'ml-read-only' : ''; ?>">
                                                                     <input type="hidden" id="field_type_<?php echo $key; ?>"
                                                                            name="field_type_<?php echo $key; ?>"
-                                                                           value="<?php echo $field['type']; ?>">
+                                                                           value="<?php echo $field['type'] ?? $key; ?>">
                                                                 </td>
                                                             </tr>
                                                         <?php
