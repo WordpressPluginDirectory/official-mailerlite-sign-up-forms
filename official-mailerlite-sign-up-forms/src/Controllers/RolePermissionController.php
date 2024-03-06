@@ -18,11 +18,8 @@ class RolePermissionController
         'edit_forms',
     ];
 
-    const ALLOWED_ROLES = [
-      'editor',
-      'contributor',
-      'author'
-    ];
+    public $wpRoles = [];
+
     const FORM_FIELDS = [
         'form_name' => 'Form Name',
         'form_title' => 'Form Title',
@@ -47,9 +44,12 @@ class RolePermissionController
         global $current_user;
         $roles = isset($wp_roles) ? $wp_roles->get_names() : [];
         foreach($roles as $key => $value) {
-           if(!in_array($key, self::ALLOWED_ROLES)) {
-               unset($roles[$key]);
-           }
+            if (!in_array($key, ['administrator', 'customer', 'subscriber'])) {
+                $this->wpRoles[] = $key;
+            }
+            if(!in_array($key, $this->wpRoles)) {
+                unset($roles[$key]);
+            }
         }
         $this->roles = array_keys($roles);
         $this->rolesWithNames = $roles;
@@ -106,7 +106,7 @@ class RolePermissionController
         $allowed = false;
         foreach($this->loggedInUser->roles as $role)
         {
-            if(in_array($role, $this->allowedRoles))
+            if (in_array($role, $this->allowedRoles))
             {
                 $allowed = true;
                 break;
