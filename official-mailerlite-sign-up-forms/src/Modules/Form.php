@@ -243,8 +243,7 @@ class Form
                 );
             }
         }else{
-
-            new InvalidForm($form_id);
+            new InvalidForm(htmlspecialchars($form_id));
         }
     }
 

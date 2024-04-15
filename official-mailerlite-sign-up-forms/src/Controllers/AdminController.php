@@ -93,7 +93,6 @@ class AdminController
                  && absint( $_GET['id'] )
         ) {
             $_POST = array_map( 'stripslashes_deep', $_POST );
-
             $form_id = absint( $_GET['id'] );
 
             $query = $wpdb->prepare(
@@ -172,18 +171,18 @@ class AdminController
                     if ( isset( $_POST['save_custom_signup_form'] ) ) {
                         $rolePermission = RolePermissionController::instance();
 
-                        $form_name        = Helper::issetWithDefault( 'form_name',
-                            __( 'Subscribe for newsletter!', 'mailerlite' ) );
-                        $form_title       = Helper::issetWithDefault( 'form_title',
-                            __( 'Newsletter signup', 'mailerlite' ) );
+                        $form_name        = htmlspecialchars(Helper::issetWithDefault( 'form_name',
+                            __( 'Subscribe for newsletter!', 'mailerlite' ) ));
+                        $form_title       = htmlspecialchars(Helper::issetWithDefault( 'form_title',
+                            __( 'Newsletter signup', 'mailerlite' ) ));
                         $form_description = Helper::issetWithDefault( 'form_description',
                             __( 'Just simple MailerLite form!', 'mailerlite' ), false );
-                        $success_message  = Helper::issetWithDefault( 'success_message',
+                        $success_message  = htmlspecialchars(Helper::issetWithDefault( 'success_message',
                             '<span style="color: rgb(51, 153, 102);">' . __( 'Thank you for sign up!',
-                                'mailerlite' ) . '</span>', false );
-                        $button_name      = Helper::issetWithDefault( 'button_name', __( 'Subscribe', 'mailerlite' ) );
-                        $please_wait      = Helper::issetWithDefault( 'please_wait' );
-                        $language         = Helper::issetWithDefault( 'language' );
+                                'mailerlite' ) . '</span>', false ));
+                        $button_name      = htmlspecialchars(Helper::issetWithDefault( 'button_name', __( 'Subscribe', 'mailerlite' ) ));
+                        $please_wait      = htmlspecialchars(Helper::issetWithDefault( 'please_wait' ));
+                        $language         = htmlspecialchars(Helper::issetWithDefault( 'language' ));
 
                         $selected_fields = isset( $_POST['form_selected_field'] )
                                            && is_array(
@@ -194,18 +193,18 @@ class AdminController
                                                $_POST['form_field']
                                            ) ? $_POST['form_field'] : [];
 
-                        $email_label =  Helper::issetWithDefault( 'email_label',
-                            __( 'Email', 'mailerlite' ) );
+                        $email_label =  htmlspecialchars(Helper::issetWithDefault( 'email_label',
+                            __( 'Email', 'mailerlite' ) ));
 
-                        $email_placeholder =  Helper::issetWithDefault( 'email_placeholder',
-                            __( 'Email', 'mailerlite' ) );
+                        $email_placeholder =  htmlspecialchars(Helper::issetWithDefault( 'email_placeholder',
+                            __( 'Email', 'mailerlite' ) ));
 
                         $prepared_fields = [];
 
                         foreach ( $selected_fields as $field ) {
                             if ( isset( $field_titles[ $field ] ) ) {
                                 $prepared_fields[ $field ] = [];
-                                $prepared_fields[ $field ]['title'] = $field_titles[ $field ];
+                                $prepared_fields[ $field ]['title'] = htmlspecialchars($field_titles[ $field ]);
                                 $prepared_fields[ $field ]['type']  = isset($_POST['field_type_' . $field]) ? $_POST['field_type_' . $field] : 'text';
                             }
                         }

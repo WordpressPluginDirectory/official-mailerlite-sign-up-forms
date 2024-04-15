@@ -117,16 +117,30 @@ class RolePermissionController
 
     public function toggleRolesAndPermissions()
     {
+        $this->checkNonce();
         $this->settings['enabled'] = !$this->isEnabled;
         update_option('mailerlite_forms_user_role_settings', $this->settings);
     }
 
     public function editAllowedRolesAndPermissions($roles = [], $permissions = [])
     {
+        $this->checkNonce();
         $roles[] = 'editor';
         $this->settings['allowed_roles'] = $roles;
         $this->settings['allowed_permissions'] = $permissions;
         update_option('mailerlite_forms_user_role_settings', $this->settings);
+    }
+
+    private function checkNonce()
+    {
+        if (!$this->isAdmin()) {
+            wp_send_json_error( 'Invalid permission.' );
+            wp_die();
+        }
+        if ( ! wp_verify_nonce( $_POST['ml_settings_non_admin_custom_form_nonce'], 'ml_form_doi_nonce' ) ) {
+            wp_send_json_error( 'Invalid security token sent.' );
+            wp_die();
+        }
     }
 
 }
