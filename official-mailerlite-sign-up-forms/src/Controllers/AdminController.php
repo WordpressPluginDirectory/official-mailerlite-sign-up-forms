@@ -93,6 +93,7 @@ class AdminController
                  && absint( $_GET['id'] )
         ) {
             $_POST = array_map( 'stripslashes_deep', $_POST );
+
             $form_id = absint( $_GET['id'] );
 
             $query = $wpdb->prepare(
@@ -177,9 +178,9 @@ class AdminController
                             __( 'Newsletter signup', 'mailerlite' ) ));
                         $form_description = Helper::issetWithDefault( 'form_description',
                             __( 'Just simple MailerLite form!', 'mailerlite' ), false );
-                        $success_message  = htmlspecialchars(Helper::issetWithDefault( 'success_message',
+                        $success_message  = Helper::issetWithDefault( 'success_message',
                             '<span style="color: rgb(51, 153, 102);">' . __( 'Thank you for sign up!',
-                                'mailerlite' ) . '</span>', false ));
+                                'mailerlite' ) . '</span>', false );
                         $button_name      = htmlspecialchars(Helper::issetWithDefault( 'button_name', __( 'Subscribe', 'mailerlite' ) ));
                         $please_wait      = htmlspecialchars(Helper::issetWithDefault( 'please_wait' ));
                         $language         = htmlspecialchars(Helper::issetWithDefault( 'language' ));

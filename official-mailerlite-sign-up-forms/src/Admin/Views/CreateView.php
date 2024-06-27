@@ -51,7 +51,7 @@ class CreateView
 
                                             <label for="form_type_custom" class="selectit">
                                                 <input id="form_type_custom" type="radio" name="form_type" value="1"
-                                                       onclick="document.getElementById('expl').classList.add('hidden')"
+                                                       onclick="embedFormSelected(true)"
                                                        checked="checked">
                                                 <?php echo __( 'Custom signup form', 'mailerlite' ); ?>
                                                 <p>
@@ -85,9 +85,9 @@ class CreateView
                                             ?>
                                             <label for="form_type_webform" class="selectit<?php echo count( $embed_button_webforms ) == 0 ? ' ml_unavailable' : '' ?>">
                                                 <input id="form_type_webform" type="radio" name="form_type"
-                                                       onclick="document.getElementById('expl').classList.remove('hidden')"
-                                                       value="2"<?php echo count( $embed_button_webforms ) == 0 ? ' disabled="disabled"' : ''; ?>>
-                                                <?php echo __( 'Forms created in MailerLite', 'mailerlite' ); ?>
+                                                       onclick="embedFormSelected()"
+                                                       value="2">
+                                                <?php echo __( 'Embedded forms created in MailerLite', 'mailerlite' ); ?>
                                                 <p>
                                                     <img class="mailerlite-icon"
                                                          src="<?php echo MAILERLITE_PLUGIN_URL ?>/assets/image/mailerlite_form.png">
@@ -97,7 +97,7 @@ class CreateView
                                                         'mailerlite' ); ?>
                                                 </p>
                                             </label>
-
+                                            <input type="hidden" id="mailerliteEmbedFormCount" value="<?php echo (count( $embed_button_webforms ) > 0 ) ?? false; ?>"/>
                                         </div>
                                     </div>
 
@@ -105,12 +105,18 @@ class CreateView
 
                                 </div>
 
-                                <p id="expl" class="hidden info notice notice-info">
-                                    <?php echo __( 'Explanation about forms', 'mailerlite' ); ?>
+                                <p id="expl" class="hidden info notice notice-<?php echo count( $embed_button_webforms ) == 0 ? 'warning' : 'info' ?>">
+                                <?php
+                                if (count($embed_button_webforms ) == 0) {
+                                    echo __( 'Warning about forms', 'mailerlite' );
+                                } else {
+                                    echo __( 'Explanation about forms', 'mailerlite' );
+                                }
+                                ?>
                                 </p>
-
                                 <div class="submit">
                                     <input class="button-primary"
+                                           id="createFormBtn"
                                            value="<?php echo __( 'Create form', 'mailerlite' ); ?>" name="create_signup_form"
                                            type="submit">
                                     <a class="button-secondary"
@@ -123,6 +129,23 @@ class CreateView
                 </div>
             </div>
         </div>
+        <script>
+            function embedFormSelected(customForm = false)
+            {
+                document.getElementById('createFormBtn').removeAttribute('disabled');
+                if (customForm) {
+                    document.getElementById('expl').classList.add('hidden');
+                    return;
+                }
+                const webForms = document.getElementById('mailerliteEmbedFormCount').value;
+                document.getElementById('expl').classList.remove('hidden');
+                console.log(webForms);
+                if (!webForms) {
+                    document.getElementById('createFormBtn').setAttribute('disabled', 'disabled');
+                }
+            }
+
+        </script>
 
         <?php
     }

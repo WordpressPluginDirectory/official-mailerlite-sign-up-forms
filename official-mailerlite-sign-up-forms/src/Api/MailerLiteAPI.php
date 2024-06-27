@@ -83,7 +83,7 @@ class MailerLiteAPI
             'offset' => ( $offset - 1 ) * $limit
         ]);
 
-        return count( self::parseResponse($response) ) > 0;
+        return count( self::parseResponse($response) ?? [] ) > 0;
     }
 
     /**

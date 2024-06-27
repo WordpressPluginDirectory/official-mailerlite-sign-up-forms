@@ -1,19 +1,19 @@
 msgid ""
 msgstr ""
+"Project-Id-Version: MailerLite wordpress plugin\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-01-28 10:27+0000\n"
+"PO-Revision-Date: 2024-06-07 16:07+0530\n"
+"Last-Translator: \n"
+"Language-Team: Russian\n"
+"Language: ru_RU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Loco https://localise.biz/\n"
-"Project-Id-Version: MailerLite wordpress plugin\n"
-"Language: ru_RU\n"
-"POT-Creation-Date: 2019-01-28 10:27+0000\n"
-"PO-Revision-Date: 2019-01-28 11:49+0000\n"
-"Last-Translator: \n"
-"Language-Team: Russian\n"
-"Report-Msgid-Bugs-To: \n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10 >= 2 && "
 "n%10<=4 &&(n%100<10||n%100 >= 20)? 1 : 2);\n"
-"X-Loco-Version: 2.2.0; wp-5.0.3"
+"X-Generator: Poedit 3.4.2\n"
+"X-Loco-Version: 2.2.0; wp-5.0.3\n"
 
 #: mailerlite.php:158
 msgid "Environment"
@@ -502,11 +502,22 @@ msgstr "Добавьте формы подписки из вашего акка�
 #: include/templates/admin/edit_embedded.php:63
 msgid "Explanation about forms"
 msgstr ""
-"Заметьте, пожалуйста, что возможно добавить только <b>Встраиваемые</b> формы "
-"и <b>Кнопки</b>. Всплывающие <b>Popup</b> формы на вашем сайте WordPress "
-"показываются автоматически. Отключить <b>Popup</b> формы можно в <a "
-"href=\"admin.php?page=mailerlite_settings\">настройках</a>. Добавлять <b>"
-"Посадочные страницы</b> на WordPress нельзя."
+"Обратите внимание: вы можете добавлять только <b>встроенные формы</b>. "
+"<b>Всплывающие</b> формы автоматически отображаются на вашем сайте "
+"Wordpress. Вы можете отключить <b>Всплывающие</b> формы в <a href=\\”admin."
+"php?page=mailerlite_settings\\”>Настройки</a>. Вы не можете включать "
+"<b>Целевые</b> страницы на свою страницу Wordpress"
+
+# @ mailerlite
+#: include/templates/admin/create.php:79
+#: include/templates/admin/edit_embedded.php:63
+msgid "Warning about forms"
+msgstr ""
+"В вашей учетной записи не создано ни одной формы типа <b>Встроить</b>. "
+"<b>Всплывающие</b> формы автоматически отображаются на вашем сайте "
+"Wordpress. Вы можете отключить <b> Всплывающие</b> формы в <a href=\\”admin."
+"php?page=mailerlite_settings\\”>Настройки</a>. Вы не можете включать "
+"<b>Целевые</b> страницы на свою страницу Wordpress"
 
 #. mailerlite
 #: include/templates/admin/api_key.php:12

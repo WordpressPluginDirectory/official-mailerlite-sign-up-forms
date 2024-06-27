@@ -408,7 +408,7 @@ msgid ""
 msgstr ""
 
 #: include/templates/admin/create.php:60
-msgid "Forms created in MailerLite"
+msgid "Embedded forms created in MailerLite"
 msgstr ""
 
 #: include/templates/admin/create.php:66
