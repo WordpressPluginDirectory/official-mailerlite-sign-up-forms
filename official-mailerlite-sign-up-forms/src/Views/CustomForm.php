@@ -35,7 +35,7 @@ class CustomForm
                         <?php if ( ! empty( $form_data['title'] )) { ?>
                             <div class="mailerlite-form-title"><h3><?php echo $form_data['title']; ?></h3></div>
                         <?php } ?>
-                        <div class="mailerlite-form-description"><?php echo stripslashes( $form_data['description'] ); ?></div>
+                        <div class="mailerlite-form-description"><?php echo wp_kses_post( stripslashes( $form_data['description'] ) ); ?></div>
                         <div class="mailerlite-form-inputs">
                             <?php foreach ( $form_data['fields'] as $key => $field ): ?>
                                 <?php
@@ -91,7 +91,7 @@ class CustomForm
                         </div>
                         <div class="mailerlite-form-response">
                             <?php if ( ! empty( $form_data['success_message'] ) ) { ?>
-                                <h4><?php echo $form_data['success_message'] ?></h4>
+                                <h4><?php echo wp_kses_post( $form_data['success_message'] ); ?></h4>
                             <?php } else { ?>
                                 <h4><?php _e( 'Thank you for signing up!', 'mailerlite' ); ?></h4>
                             <?php } ?>
@@ -100,6 +100,9 @@ class CustomForm
                 </div>
             </div>
         <script type="text/javascript" src='<?php echo MAILERLITE_PLUGIN_URL ?>/assets/js/localization/validation-messages.js'></script>
+        <?php
+        ob_start();
+        ?>
         <script type="text/javascript">
                 var selectedLanguage = "<?php echo $form_data['language'] ?? false; ?>";
                 var validationMessages = messages["en"];
@@ -215,7 +218,7 @@ class CustomForm
                             }
                         }, 50);
                     }
-                }
+                };
 
                 function validateEmail(email){
                     if(email.match(
@@ -227,5 +230,7 @@ class CustomForm
                 }
             </script>
         <?php
+            $content = ob_get_clean();
+            echo preg_replace('/\s+/', ' ', $content);
     }
 }
