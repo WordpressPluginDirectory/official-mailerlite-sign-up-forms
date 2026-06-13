@@ -38,6 +38,12 @@ class AdminController
      */
     public static function forms() {
 
+        $rolePermission = RolePermissionController::instance();
+
+        if (!$rolePermission->isAllowed()) {
+            wp_die( esc_html__( 'You do not have permission to view this page.', 'mailerlite' ) );
+        }
+
         global $wpdb;
 
         $api_key = self::apiKey();
@@ -51,8 +57,12 @@ class AdminController
 
         // Create new signup form view
         if ( isset( $_GET['view'] ) && $_GET['view'] == 'create' ) {
-
+            if ( ! current_user_can( 'manage_options' ) ) {
+                wp_die( esc_html__( 'You do not have permission to view this page.', 'mailerlite' ) );
+            }
             if ( isset( $_POST['create_signup_form'] ) ) {
+
+                Helper::verify_nonce();
 
                 ( new Form() )->create_new_form( $_POST );
 
@@ -89,8 +99,8 @@ class AdminController
 
         } // Edit signup form view
         elseif ( isset( $_GET['view'] ) && isset( $_GET['id'] )
-                 && $_GET['view'] == 'edit'
-                 && absint( $_GET['id'] )
+            && $_GET['view'] == 'edit'
+            && absint( $_GET['id'] )
         ) {
             $_POST = array_map( 'stripslashes_deep', $_POST );
 
@@ -170,7 +180,7 @@ class AdminController
                     $fields    = $API->getFields();
 
                     if ( isset( $_POST['save_custom_signup_form'] ) ) {
-                        $rolePermission = RolePermissionController::instance();
+                        Helper::verify_nonce();
 
                         $form_name        = htmlspecialchars(Helper::issetWithDefault( 'form_name',
                             __( 'Subscribe for newsletter!', 'mailerlite' ) ));
@@ -186,13 +196,13 @@ class AdminController
                         $language         = htmlspecialchars(Helper::issetWithDefault( 'language' ));
 
                         $selected_fields = isset( $_POST['form_selected_field'] )
-                                           && is_array(
-                                               $_POST['form_selected_field']
-                                           ) ? $_POST['form_selected_field'] : [];
+                        && is_array(
+                            $_POST['form_selected_field']
+                        ) ? $_POST['form_selected_field'] : [];
                         $field_titles    = isset( $_POST['form_field'] )
-                                           && is_array(
-                                               $_POST['form_field']
-                                           ) ? $_POST['form_field'] : [];
+                        && is_array(
+                            $_POST['form_field']
+                        ) ? $_POST['form_field'] : [];
 
                         $email_label =  htmlspecialchars(Helper::issetWithDefault( 'email_label',
                             __( 'Email', 'mailerlite' ) ));
@@ -203,6 +213,7 @@ class AdminController
                         $prepared_fields = [];
 
                         foreach ( $selected_fields as $field ) {
+                            $field = sanitize_key( $field );
                             if ( isset( $field_titles[ $field ] ) ) {
                                 $prepared_fields[ $field ] = [];
                                 $prepared_fields[ $field ]['title'] = htmlspecialchars($field_titles[ $field ]);
@@ -280,10 +291,11 @@ class AdminController
                     }
 
                     if ( isset( $_POST['save_embedded_signup_form'] ) ) {
+                        Helper::verify_nonce();
                         $form_name = Helper::issetWithDefault( 'form_name', __( 'Embedded webform', 'mailerlite' ) );
 
                         $form_webform_id = isset( $_POST['form_webform_id'] )
-                                           && isset( $parsed_webforms[ $_POST['form_webform_id'] ] )
+                        && isset( $parsed_webforms[ $_POST['form_webform_id'] ] )
                             ? absint( $_POST['form_webform_id'] ) : 0;
 
                         $form_data = [
@@ -322,8 +334,10 @@ class AdminController
             }
         } // Delete signup form view
         elseif ( isset( $_GET['view'] ) && isset( $_GET['id'] )
-                 && $_GET['view'] == 'delete'
-                 && absint( $_GET['id'] ) ) {
+            && $_GET['view'] == 'delete'
+            && absint( $_GET['id'] )
+            && current_user_can( 'manage_options' )) {
+            Helper::verify_nonce();
             $wpdb->delete(
                 $wpdb->base_prefix . 'mailerlite_forms', [ 'id' => absint( $_GET['id'] ) ]
             );
@@ -417,23 +431,31 @@ class AdminController
 
         check_admin_referer( 'mailerlite_load_more_groups', 'ml_nonce' );
 
-        $form_id = absint( $_POST['form_id'] );
-        $offset  = absint( $_POST['offset'] );
+        $form_id = absint( isset( $_POST['form_id'] ) ? $_POST['form_id'] : 0 );
+        $offset  = absint( isset( $_POST['offset'] ) ? $_POST['offset'] : 0 );
 
-        $query = $wpdb->prepare(
-            "SELECT *
+        $form = null;
+        $lists = [];
+
+        if ($form_id > 0) {
+            $query = $wpdb->prepare(
+                "SELECT *
         FROM {$wpdb->base_prefix}mailerlite_forms
         WHERE id=%d",
-            $form_id
-        );
+                $form_id
+            );
 
-        $form = $wpdb->get_row($query);
+            $form = $wpdb->get_row($query);
 
-        $form->data = unserialize( $form->data );
 
-        $ML_Groups = new PlatformAPI( self::apiKey() );
+            if ($form) {
+                $form->data = unserialize($form->data);
 
-        $lists = $form->data['lists'];
+                $lists = $form->data['lists'];
+            }
+        }
+
+        $ML_Groups = new PlatformAPI(self::apiKey());
 
         $groups_from_ml_extended = $ML_Groups->getMoreGroups(self::FIRST_GROUP_LOAD, $offset);
 

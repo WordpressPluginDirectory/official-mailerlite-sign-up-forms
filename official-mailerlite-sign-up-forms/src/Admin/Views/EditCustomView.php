@@ -55,6 +55,7 @@ class EditCustomView
                         <form id="edit_custom"
                               action="<?php echo admin_url( 'admin.php?page=mailerlite_main&view=edit&id=' . $form_id); ?>"
                               method="post">
+                            <?php Helper::nonce_field(); ?>
 
                             <input type="text" name="form_name" class="form-large" size="30" maxlength="255"
                                    value="<?php echo $form->name; ?>" id="form_name"
@@ -454,6 +455,7 @@ class EditCustomView
                         },
                         body: new URLSearchParams({
                             action: 'mailerlite_get_more_groups', offset: groupsElement.dataset.offset,
+                            form_id: <?php echo $form_id; ?>,
                             ml_nonce: '<?php echo wp_create_nonce( 'mailerlite_load_more_groups' );?>'
                         })
                     })
